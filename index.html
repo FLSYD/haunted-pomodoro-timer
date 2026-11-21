@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Haunted Pomodoro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-mode="focus">
+  <div class="moon" aria-hidden="true"></div>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="fog fog-a" aria-hidden="true"></div>
+  <div class="fog fog-b" aria-hidden="true"></div>
+
+  <!-- Floating ghosts -->
+  <svg class="ghost ghost-a" viewBox="0 0 100 120" aria-hidden="true">
+    <path d="M10 110 V50 C10 20 30 5 50 5 S90 20 90 50 V110 L75 95 L62 110 L50 95 L38 110 L25 95 Z" fill="#f3eefe"/>
+    <ellipse cx="36" cy="48" rx="7" ry="10" fill="#1a0b2e"/>
+    <ellipse cx="64" cy="48" rx="7" ry="10" fill="#1a0b2e"/>
+    <ellipse cx="50" cy="72" rx="8" ry="10" fill="#1a0b2e"/>
+  </svg>
+  <svg class="ghost ghost-b" viewBox="0 0 100 120" aria-hidden="true">
+    <path d="M10 110 V50 C10 20 30 5 50 5 S90 20 90 50 V110 L75 95 L62 110 L50 95 L38 110 L25 95 Z" fill="#f3eefe"/>
+    <ellipse cx="36" cy="48" rx="6" ry="8" fill="#1a0b2e"/>
+    <ellipse cx="64" cy="48" rx="6" ry="8" fill="#1a0b2e"/>
+    <path d="M38 72 Q50 84 62 72" stroke="#1a0b2e" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </svg>
+
+  <!-- Bats -->
+  <svg class="bat bat-a" viewBox="0 0 60 30" aria-hidden="true"><path d="M30 8 C26 2 16 0 2 6 C10 8 12 14 14 22 C18 16 22 16 25 22 L30 14 L35 22 C38 16 42 16 46 22 C48 14 50 8 58 6 C44 0 34 2 30 8Z" fill="#3b1a63" stroke="#8b5cf6" stroke-width="1"/></svg>
+  <svg class="bat bat-b" viewBox="0 0 60 30" aria-hidden="true"><path d="M30 8 C26 2 16 0 2 6 C10 8 12 14 14 22 C18 16 22 16 25 22 L30 14 L35 22 C38 16 42 16 46 22 C48 14 50 8 58 6 C44 0 34 2 30 8Z" fill="#3b1a63" stroke="#8b5cf6" stroke-width="1"/></svg>
+
+  <main class="app">
+    <h1 class="title">Haunted <span>Pomodoro</span></h1>
+
+    <nav class="modes" role="tablist" aria-label="Timer mode">
+      <button role="tab" data-mode="focus" class="active" aria-selected="true">Focus</button>
+      <button role="tab" data-mode="short" aria-selected="false">Short Break</button>
+      <button role="tab" data-mode="long" aria-selected="false">Long Break</button>
+    </nav>
+
+    <section class="dial" aria-live="off">
+      <svg class="ring" viewBox="0 0 320 320" aria-hidden="true">
+        <circle class="ring-bg" cx="160" cy="160" r="150"/>
+        <circle class="ring-fg" id="ring" cx="160" cy="160" r="150"/>
+      </svg>
+
+      <!-- Pumpkin -->
+      <svg class="pumpkin" id="pumpkin" viewBox="0 0 200 180" aria-hidden="true">
+        <defs>
+          <radialGradient id="pg" cx="50%" cy="40%" r="65%">
+            <stop offset="0" class="pk-a"/>
+            <stop offset="1" class="pk-b"/>
+          </radialGradient>
+        </defs>
+        <path d="M100 30 C98 18 104 10 116 6" class="pk-stem" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <ellipse class="pk-side" cx="55" cy="105" rx="45" ry="62"/>
+        <ellipse class="pk-side" cx="145" cy="105" rx="45" ry="62"/>
+        <ellipse cx="78" cy="105" rx="45" ry="66" fill="url(#pg)"/>
+        <ellipse cx="122" cy="105" rx="45" ry="66" fill="url(#pg)"/>
+        <ellipse class="pk-mid" cx="100" cy="105" rx="34" ry="68"/>
+        <g class="face">
+          <path d="M58 82 L80 82 L69 62 Z" fill="#2a0b3d"/>
+          <path d="M120 82 L142 82 L131 62 Z" fill="#2a0b3d"/>
+          <path d="M96 98 L104 98 L100 108 Z" fill="#2a0b3d"/>
+          <path d="M56 118 Q100 164 144 118 L132 122 L122 134 L112 124 L100 138 L88 124 L78 134 L68 122 Z" fill="#2a0b3d"/>
+        </g>
+        <g class="glow">
+          <path d="M58 82 L80 82 L69 62 Z"/>
+          <path d="M120 82 L142 82 L131 62 Z"/>
+          <path d="M96 98 L104 98 L100 108 Z"/>
+          <path d="M56 118 Q100 164 144 118 L132 122 L122 134 L112 124 L100 138 L88 124 L78 134 L68 122 Z"/>
+        </g>
+      </svg>
+    </section>
+
+    <div class="time-wrap">
+      <div class="time" id="time" role="timer">25:00</div>
+      <div class="label" id="label">Time to haunt your tasks</div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn" class="btn primary">Start</button>
+      <button id="resetBtn" class="btn ghost-btn">Reset</button>
+    </div>
+
+    <label class="auto">
+      <input type="checkbox" id="autoStart" checked />
+      <span>Auto-start next phase</span>
+    </label>
+
+    <section class="stats">
+      <div class="stat">
+        <span class="stat-title">Round</span>
+        <div class="dots" id="dots" aria-label="Round progress"></div>
+        <span class="stat-sub" id="roundText">Round 1 of 4</span>
+      </div>
+      <div class="stat">
+        <span class="stat-title">Today's rounds</span>
+        <span class="big" id="todayCount">0</span>
+        <button class="link" id="clearToday" title="Clear today's count">clear</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="ground" aria-hidden="true">
+    <svg viewBox="0 0 1200 140" preserveAspectRatio="xMidYMax slice">
+      <g fill="#0b0414">
+        <path d="M0 140 V90 Q150 60 300 90 T600 85 T900 92 T1200 80 V140Z"/>
+        <!-- dead tree left -->
+        <path d="M70 100 L74 40 L60 22 M74 40 L92 24 M72 62 L50 50 M74 56 L96 46 L106 32 L102 50 L112 44 M72 100 L68 60" stroke="#0b0414" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <!-- dead tree right -->
+        <path d="M1110 100 L1106 46 L1120 28 M1106 46 L1088 30 M1108 70 L1130 58 M1106 62 L1084 54" stroke="#0b0414" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <!-- gravestones -->
+        <path d="M200 96 V70 Q200 58 212 58 Q224 58 224 70 V96Z"/>
+        <path d="M262 98 V78 Q262 70 270 70 Q278 70 278 78 V98Z"/>
+        <path d="M930 96 V68 Q930 56 944 56 Q958 56 958 68 V96Z"/>
+        <path d="M985 98 V82 H1005 V98Z M991 82 V72 H999 V82Z M984 76 H1006 V72 H984Z"/>
+      </g>
+    </svg>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
